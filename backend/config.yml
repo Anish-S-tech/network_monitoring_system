@@ -1,0 +1,33 @@
+# config.yaml
+interface: "eth0"                 # change to your capture interface
+bpf_filter: "tcp or udp"
+capture_timeout: 0                # 0 for continuous
+log_dir: "/var/log/netmon"
+pcap_dir: "/var/log/netmon/pcaps"
+db_path: "./data/alerts.db"
+
+# Splunk HEC
+splunk:
+  hec_url: "https://splunk.example.com:8088/services/collector"
+  hec_token: "CHANGE_ME"
+  verify_ssl: true
+  index: "main"
+
+# Detection thresholds
+detection:
+  portscan:
+    ports_threshold: 20
+    window_seconds: 10
+  ddos:
+    pkt_rate_threshold: 1000
+    window_seconds: 5
+  ssh_bruteforce:
+    attempts_threshold: 10
+    window_seconds: 60
+
+# ML model path (optional)
+ml:
+  enabled: true
+  model_path: "./models/isolation_forest.pkl"
+  features: ["pkt_rate","avg_pkt_size","src_entropy","dst_entropy","protocol_ratio_tcp"]
+  score_threshold: -0.2   # lower -> more anomalous for IF raw scores, tune after training
